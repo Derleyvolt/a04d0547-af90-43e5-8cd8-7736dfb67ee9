@@ -2,6 +2,7 @@ package com.challenge.checkout.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "tenants", uniqueConstraints = { @UniqueConstraint(columnNames = {"name", "URL"}) })
+@Table(name = "tenants", uniqueConstraints = { @UniqueConstraint(columnNames = {"name", "baseURL"}) })
 public class TenantModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +22,6 @@ public class TenantModel {
     @NotBlank
     private String name;
 
-    @NotBlank
-    private String URL;
+    @Pattern(regexp="^[a-z][a-z0-9][a-zA-Z0-9]*$")
+    private String baseURL;
 }

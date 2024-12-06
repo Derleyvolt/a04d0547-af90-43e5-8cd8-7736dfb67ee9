@@ -45,7 +45,10 @@ public class BasketController {
     }
 
     @GetMapping(value = "/{tenantName}/baskets/{basketId}")
-    public ResponseEntity<BasketResponseDTO> detailBasket(@PathVariable String tenantName, @PathVariable Long basketId) {
+    public ResponseEntity<BasketResponseDTO> detailBasket(
+            @PathVariable String tenantName,
+            @PathVariable Long basketId
+    ) {
         BasketResponseDTO basketModel = basketService.detailBasket(basketId, tenantName);
         return ResponseEntity.ok().body(basketModel);
     }
@@ -56,7 +59,8 @@ public class BasketController {
             @PathVariable Long basketId,
             @RequestBody @Valid List<BasketItemRequestDTO> basketItemRequestDTOList
     ) {
-        BasketResponseDTO basketResponseDTO = basketService.increaseItemsQuantity(basketId, tenantName, basketItemRequestDTOList);
+        BasketResponseDTO basketResponseDTO =
+                basketService.increaseItemsQuantity(basketId, tenantName, basketItemRequestDTOList);
         return ResponseEntity.ok().body(basketResponseDTO);
     }
 
@@ -66,7 +70,8 @@ public class BasketController {
             @PathVariable Long basketId,
             @RequestBody @Valid List<BasketItemRequestDTO> basketItemRequestDTOList
     ) {
-        BasketResponseDTO basketResponseDTO = basketService.decreaseItemsQuantity(basketId, tenantName, basketItemRequestDTOList);
+        BasketResponseDTO basketResponseDTO =
+                basketService.decreaseItemsQuantity(basketId, tenantName, basketItemRequestDTOList);
         return ResponseEntity.ok().body(basketResponseDTO);
     }
 
@@ -102,9 +107,21 @@ public class BasketController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "/{tenantName}/baskets/{basketId}/checkout")
-    public ResponseEntity<CheckoutBasketModelResponseDTO> performCheckout(@PathVariable String tenantName, @PathVariable Long basketId) {
+    @PutMapping(value = "/{tenantName}/baskets/{basketId}/checkout")
+    public ResponseEntity<CheckoutBasketModelResponseDTO> performCheckout(
+            @PathVariable String tenantName,
+            @PathVariable Long basketId
+    ) {
         CheckoutBasketModelResponseDTO checkoutBasketModelResponseDTO = basketService.performCheckout(basketId, tenantName);
+        return ResponseEntity.ok().body(checkoutBasketModelResponseDTO);
+    }
+
+    @GetMapping(value = "/{tenantName}/baskets/{basketId}/checkout")
+    public ResponseEntity<CheckoutBasketModelResponseDTO> showCheckout(
+            @PathVariable String tenantName,
+            @PathVariable Long basketId
+    ) {
+        CheckoutBasketModelResponseDTO checkoutBasketModelResponseDTO = basketService.showCheckout(basketId, tenantName);
         return ResponseEntity.ok().body(checkoutBasketModelResponseDTO);
     }
 }

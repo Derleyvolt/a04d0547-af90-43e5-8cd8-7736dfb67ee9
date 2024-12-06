@@ -12,10 +12,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class BasketItemRequestDTO {
-    @NotNull(message = "ProductId must not be null")
+    @NotNull
     private String productId;
 
-    @Positive(message = "Quantity must be greater than zero.")
+    @Positive
     private int quantity;
 
     public void increaseQuantity(int quantity) {

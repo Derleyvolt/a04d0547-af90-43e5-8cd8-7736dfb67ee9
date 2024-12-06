@@ -9,7 +9,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", uses={BasketItemMapper.class})
 public interface BasketMapper {
-    BasketModel toModel(BasketRequestDTO dto);
     BasketResponseDTO toResponseDTO(BasketModel basketModel);
     List<BasketResponseDTO> toResponseDTOList(List<BasketModel> basketModels);
 }

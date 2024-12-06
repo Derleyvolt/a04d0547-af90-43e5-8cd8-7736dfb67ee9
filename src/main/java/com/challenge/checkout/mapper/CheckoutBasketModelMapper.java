@@ -10,6 +10,4 @@ import java.util.List;
 public interface CheckoutBasketModelMapper {
     CheckoutBasketModel toModel(CheckoutBasketModelResponseDTO dto);
     CheckoutBasketModelResponseDTO toResponseDTO(CheckoutBasketModel model);
-    List<CheckoutBasketModelResponseDTO> toResponseDTOList(List<CheckoutBasketModel> dtoList);
-    List<CheckoutBasketModel> toModelList(List<CheckoutBasketModelResponseDTO> modelList);
 }

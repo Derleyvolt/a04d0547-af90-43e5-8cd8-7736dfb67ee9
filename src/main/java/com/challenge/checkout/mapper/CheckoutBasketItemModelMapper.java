@@ -9,7 +9,4 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface CheckoutBasketItemModelMapper {
     CheckoutBasketItemModelResponseDTO toResponseDTO(CheckoutBasketModelResponseDTO model);
-    CheckoutBasketModelResponseDTO toModel(CheckoutBasketItemModelResponseDTO dto);
-    List<CheckoutBasketItemModelResponseDTO> toResponseDTOList(List<CheckoutBasketModelResponseDTO> dtoList);
-    List<CheckoutBasketItemModelResponseDTO> toModel(List<CheckoutBasketModelResponseDTO> modelList);
 }

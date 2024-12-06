@@ -11,6 +11,6 @@ public class ProductBadRequestException extends BadRequestException {
     }
 
     public ProductBadRequestException(List<String> errors) {
-        super(errors, "Products do not exists");
+        super(errors, "Products not found");
     }
 }

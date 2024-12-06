@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface BasketRepository extends JpaRepository<BasketModel, Long> {
-    Optional<BasketModel> findByIdAndTenant_Name(Long id, String tenantName);
+    Optional<BasketModel> findByIdAndTenant(Long id, TenantModel tenant);
     List<BasketModel> findByTenant(TenantModel tenant);
 }

@@ -1,4 +1,4 @@
-package com.challenge.checkout.gateway.marketA;
+package com.challenge.checkout.gateway.marketB;
 
 import com.challenge.checkout.exception.BadRequestException;
 import com.challenge.checkout.exception.ServiceUnavailableException;
@@ -9,21 +9,20 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.HttpClientErrorException.NotFound;
 import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
 
 @Component
-public class WiremockMarketA {
+public class WiremockMarketB {
     @Autowired
     private RestTemplate restTemplate;
 
     @Getter
-    private final String tenantName = "market-a"; // Used to identify correct instance of tenant
+    private final String tenantName = "market-b"; // Used to identify correct instance of tenant
                                                   // wiremock by Strategy design pattern
 
     public List<Map<String, Object>> getProducts(String baseURL) {

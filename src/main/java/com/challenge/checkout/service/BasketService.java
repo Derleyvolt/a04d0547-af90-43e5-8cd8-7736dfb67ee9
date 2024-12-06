@@ -71,15 +71,16 @@ public class BasketService {
         return List.copyOf(productMap.values());
     }
 
-    private TenantModel getTenantOrException(String tenantName) {
+    public TenantModel getTenantOrException(String tenantName) {
         return tenantRepository.findByName(tenantName).orElseThrow(
             () -> new BadRequestException(String.format("Tenant %s not found.", tenantName))
         );
     }
 
-    // Throw Exception if cannot modify Basket or it does not exist
+    // Throw exception if you cannot modify Basket, or it does not exist
     private BasketModel getBasketToModifyOrException(Long basketId, String tenantName) {
-        BasketModel basketModel = basketRepository.findByIdAndTenant_Name(basketId, tenantName).
+        TenantModel tenant = getTenantOrException(tenantName);
+        BasketModel basketModel = basketRepository.findByIdAndTenant(basketId, tenant).
                 orElseThrow(BasketNotFoundException::new);
 
         if (basketModel.getStatus() == BasketStatusEnum.CHECKOUT) {
@@ -89,16 +90,25 @@ public class BasketService {
         return basketModel;
     };
 
+    public BasketModel getBasketOrException(Long basketId, String tenantName) {
+        TenantModel tenant = getTenantOrException(tenantName);
+        return basketRepository.findByIdAndTenant(basketId, tenant).
+                orElseThrow(BasketNotFoundException::new);
+    }
+
     private void validateProductExistence(String tenantName, List<BasketItemRequestDTO> itemsRequestDTO) {
         TenantModel tenant = getTenantOrException(tenantName);
-        List<ProductBase> products = productService.getProducts(tenant);
+        List<ProductBase> products = productService.getProducts(tenantName);
+
+        Set<String> productsId = products.stream()
+                .map(ProductBase::getId)
+                .collect(Collectors.toSet());
 
         // Check if all products in the basket are present in the market
-        List<String> productsNotFound = itemsRequestDTO.stream().filter(
-            basketProduct -> products.stream().noneMatch(
-                prod -> prod.getId().equals(basketProduct.getProductId())
-            )
-        ).map(BasketItemRequestDTO::getProductId).toList();
+        List<String> productsNotFound = itemsRequestDTO
+            .stream()
+            .map(BasketItemRequestDTO::getProductId)
+            .filter(productId -> !productsId.contains(productId)).toList();
 
         // Throw an exception if any products are not found in the market
         if (!productsNotFound.isEmpty()) {
@@ -112,7 +122,6 @@ public class BasketService {
         }
     }
 
-    @Transactional
     public BasketResponseDTO deleteBasketItems(Long basketId, String tenantName, List<String> productsId) {
         BasketModel basketModel = getBasketToModifyOrException(basketId, tenantName);
 
@@ -123,7 +132,7 @@ public class BasketService {
                                     .collect(Collectors.toSet());
 
         // Get all prodcuts that do not exist in the basket
-        productsId.stream().filter(storedProductsId::contains).forEach(productId -> {
+        productsId.stream().filter(productId -> !storedProductsId.contains(productId)).forEach(productId -> {
             errors.add("The product with ID " + productId + " does not exist in Basket.");
         });
 
@@ -159,7 +168,6 @@ public class BasketService {
         return basketMapper.toResponseDTO(basketRepository.save(basketModel));
     }
 
-    @Transactional
     public BasketResponseDTO addOrUpdateBasketItems(Long basketId, String tenantName, List<BasketItemRequestDTO> itemsRequestDTO) {
         validateProductExistence(tenantName, itemsRequestDTO);
         BasketModel basketModel = getBasketToModifyOrException(basketId, tenantName);
@@ -171,7 +179,7 @@ public class BasketService {
         TenantModel tenant = getTenantOrException(tenantName);
         validateProductExistence(tenantName, itemsRequestDTO);
 
-        Map<String, ProductBase> productMap = productService.getProducts(tenant).stream().collect(toMap(
+        Map<String, ProductBase> productMap = productService.getProducts(tenantName).stream().collect(toMap(
                 ProductBase::getId,
                 product -> product
         ));
@@ -190,13 +198,22 @@ public class BasketService {
         return basketMapper.toResponseDTO(basketRepository.save(newBasketModel));
     }
 
+    @Transactional
     public void reopenBasket(Long basketId, String tenantName) {
-        BasketModel basketModel = basketRepository.findById(basketId).orElseThrow(BasketNotFoundException::new);
+        TenantModel tenant = getTenantOrException(tenantName);
+        BasketModel basketModel = basketRepository.findByIdAndTenant(basketId, tenant)
+                                .orElseThrow(BasketNotFoundException::new);
 
         if (basketModel.getStatus() == BasketStatusEnum.ACTIVE) {
             throw new BasketAlreadyOpenException();
         }
 
+        // Delete Checkout Model to allow to do new checkout
+        CheckoutBasketModel checkoutModel = checkoutBasketRepository
+                .findByBasket(basketModel)
+                .orElseThrow(() -> new BadRequestException("Checkout model not found"));
+
+        checkoutBasketRepository.delete(checkoutModel);
         basketModel.setStatus(BasketStatusEnum.ACTIVE);
         basketRepository.save(basketModel);
     }
@@ -213,7 +230,6 @@ public class BasketService {
 
     @Transactional
     public CheckoutBasketModelResponseDTO performCheckout(Long basketId, String tenantName) {
-        TenantModel tenant = getTenantOrException(tenantName);
         BasketModel basketModel = getBasketToModifyOrException(basketId, tenantName);
 
         if (basketModel.getItems().isEmpty()) {
@@ -228,7 +244,7 @@ public class BasketService {
 
         basketItems.forEach(basketItem -> {
             // Make request to wiremock API to get product promotions
-            ProductWithPromotions product = productService.getProductWithPromotions(tenant, basketItem.getProductId());
+            ProductWithPromotions product = productService.getProductWithPromotions(tenantName, basketItem.getProductId());
             List<Promotion> promotions = new ArrayList<>(product.getPromotions());
 
             // Order Basket by priority
@@ -295,5 +311,20 @@ public class BasketService {
 
         basketRepository.save(basketModel); // save checkout status
         return checkoutBasketModelMapper.toResponseDTO(checkoutBasketRepository.save(checkoutModel));
+    }
+
+    // Show stored checkout
+    public CheckoutBasketModelResponseDTO showCheckout(Long basketId, String tenantName) {
+        BasketModel basketModel = getBasketOrException(basketId, tenantName);
+
+        if (basketModel.getStatus() == BasketStatusEnum.ACTIVE) {
+            throw new BadRequestException("Basket is not in checkout status");
+        }
+
+        return checkoutBasketModelMapper
+                .toResponseDTO(checkoutBasketRepository.findByBasket(basketModel)
+                .orElseThrow(
+                        () -> new BadRequestException("Checkout model not found"))
+                );
     }
 }

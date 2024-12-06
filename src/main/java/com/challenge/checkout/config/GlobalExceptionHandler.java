@@ -2,6 +2,7 @@ package com.challenge.checkout.config;
 
 import com.challenge.checkout.exception.BadRequestException;
 import com.challenge.checkout.exception.NotFoundException;
+import com.challenge.checkout.exception.ServiceUnavailableException;
 import com.challenge.checkout.exception.basket.BasketAlreadyOpenException;
 import com.challenge.checkout.exception.basket.BasketForbiddenException;
 import com.challenge.checkout.exception.basket.BasketNotFoundException;
@@ -105,11 +106,12 @@ public class GlobalExceptionHandler {
         return problemDetails;
     }
 
-    @ExceptionHandler(RestClientException.class) public ProblemDetail handleRestClientException(RestClientException ex) {
+    @ExceptionHandler(ServiceUnavailableException.class)
+    public ProblemDetail handleServiceUnavailableException(ServiceUnavailableException ex) {
         ProblemDetail problemDetails = ProblemDetail
-                .forStatusAndDetail(HttpStatus.BAD_GATEWAY, ex.getMessage());
+                .forStatusAndDetail(ex.getStatusCode(), ex.getMessage());
 
-        problemDetails.setTitle("Rest Client Error");
+        problemDetails.setTitle("Service Unavailable");
         problemDetails.setProperty("timestamp", Instant.now());
 
         return problemDetails;

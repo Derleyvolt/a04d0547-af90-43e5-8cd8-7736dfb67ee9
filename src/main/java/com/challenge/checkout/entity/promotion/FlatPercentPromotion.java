@@ -20,7 +20,7 @@ public class FlatPercentPromotion extends Promotion {
 
     @Override
     public PromotionResult calculateDiscount(BigDecimal total, BigInteger unitPrice, int quantity) {
-        if (unitPrice.equals(BigInteger.ZERO)) {
+        if (amount.equals(BigDecimal.ZERO)) {
             return new PromotionResult(total, unitPrice, quantity, BigDecimal.valueOf(0));
         }
 

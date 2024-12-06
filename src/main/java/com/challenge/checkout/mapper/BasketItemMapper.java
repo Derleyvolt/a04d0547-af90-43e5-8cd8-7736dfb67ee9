@@ -21,6 +21,5 @@ public interface BasketItemMapper {
     BasketItemResponseDTO toResponseDTO(BasketItemModel model);
     BasketItemRequestDTO toRequestDTO(BasketItemModel model);
     List<BasketItemModel> toModelList(List<BasketItemRequestDTO> dtoList);
-    List<BasketItemRequestDTO> toRequestDTOList(List<BasketItemModel> modelList);
     List<BasketItemResponseDTO> toResponseDTOList(List<BasketItemModel> modelList);
 }

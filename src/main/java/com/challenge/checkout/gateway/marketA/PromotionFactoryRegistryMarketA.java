@@ -21,4 +21,3 @@ public class PromotionFactoryRegistryMarketA {
         return registry.get(promotionType);
     }
 }
-

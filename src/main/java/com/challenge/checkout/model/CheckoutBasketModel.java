@@ -19,7 +19,7 @@ public class CheckoutBasketModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "basketId", nullable = false)
     private BasketModel basket;
 
