@@ -1,5 +1,6 @@
 package com.challenge.checkout.model;
 
+import com.challenge.checkout.entity.product.ProductBase;
 import com.challenge.checkout.enums.BasketStatusEnum;
 import com.challenge.checkout.exception.BadRequestException;
 import com.challenge.checkout.exception.product.ProductNotFoundException;
@@ -10,10 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -26,7 +25,7 @@ public class BasketModel {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "tenantId", referencedColumnName = "id")
+    @JoinColumn(name = "tenantId", referencedColumnName = "id", nullable = false)
     private TenantModel tenant;
 
     @OneToMany(mappedBy = "basket", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -36,7 +35,7 @@ public class BasketModel {
     @Column(nullable = false)
     private BasketStatusEnum status;
 
-    public void addOrUpdate(BasketItemModel basketItemModel) {
+    public void addOrUpdate(BasketItemModel basketItemModel, Map<String, String> productMap) {
         Optional<BasketItemModel> optionalBasketItemModel =
                 items.stream().filter(basketItemModel::compareProduct).findFirst();
 
@@ -45,12 +44,17 @@ public class BasketModel {
             optionalBasketItemModel.get().setQuantity(basketItemModel.getQuantity());
         } else {
             basketItemModel.setBasket(this);
+            basketItemModel.setProductName(productMap.get(basketItemModel.getProductId()));
             items.add(basketItemModel);
         }
     }
 
-    public void addOrUpdate(List<BasketItemModel> basketItemsModel) {
-        basketItemsModel.forEach(this::addOrUpdate);
+    public void addOrUpdate(List<BasketItemModel> basketItemsModel, List<ProductBase> products) {
+        Map<String, String> productMap = products.stream().collect(Collectors.toMap(
+                ProductBase::getId, ProductBase::getName
+        ));
+
+        basketItemsModel.forEach(basketItem -> this.addOrUpdate(basketItem, productMap));
     }
 
     public void increaseProductQuantity(BasketItemModel basketItemModel) {

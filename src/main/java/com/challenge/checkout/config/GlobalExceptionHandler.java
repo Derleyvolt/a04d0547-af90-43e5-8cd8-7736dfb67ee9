@@ -7,13 +7,16 @@ import com.challenge.checkout.exception.basket.BasketAlreadyOpenException;
 import com.challenge.checkout.exception.basket.BasketForbiddenException;
 import com.challenge.checkout.exception.basket.BasketNotFoundException;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.util.InvalidUrlException;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -60,6 +63,8 @@ public class GlobalExceptionHandler {
         if (ex.getErrors() != null) {
             problemDetails.setProperty("errors", ex.getErrors());
         }
+
+        problemDetails.setProperty("timestamp", Instant.now());
 
         return problemDetails;
     }
@@ -112,6 +117,28 @@ public class GlobalExceptionHandler {
                 .forStatusAndDetail(ex.getStatusCode(), ex.getMessage());
 
         problemDetails.setTitle("Service Unavailable");
+        problemDetails.setProperty("timestamp", Instant.now());
+
+        return problemDetails;
+    }
+
+    @ExceptionHandler(InvalidUrlException.class)
+    public ProblemDetail handleServiceUnavailableException(InvalidUrlException ex) {
+        ProblemDetail problemDetails = ProblemDetail
+                .forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+
+        problemDetails.setTitle("Invalid URL");
+        problemDetails.setProperty("timestamp", Instant.now());
+
+        return problemDetails;
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ProblemDetail handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        ProblemDetail problemDetails = ProblemDetail
+                .forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+
+        problemDetails.setTitle("Invalid URL");
         problemDetails.setProperty("timestamp", Instant.now());
 
         return problemDetails;

@@ -9,7 +9,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.HttpClientErrorException.NotFound;
 import org.springframework.web.client.ResourceAccessException;
@@ -42,6 +41,8 @@ public class WiremockMarketA {
             throw new BadRequestException("Failure to fetch products from Market");
         } catch (ResourceAccessException ex) {
             throw new ServiceUnavailableException();
+        } catch (Exception ex) {
+            throw new BadRequestException("Failure to fetch products from Market");
         }
     }
 

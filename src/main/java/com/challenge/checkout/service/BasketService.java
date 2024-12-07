@@ -122,6 +122,7 @@ public class BasketService {
         }
     }
 
+    @Transactional
     public BasketResponseDTO deleteBasketItems(Long basketId, String tenantName, List<String> productsId) {
         BasketModel basketModel = getBasketToModifyOrException(basketId, tenantName);
 
@@ -171,7 +172,10 @@ public class BasketService {
     public BasketResponseDTO addOrUpdateBasketItems(Long basketId, String tenantName, List<BasketItemRequestDTO> itemsRequestDTO) {
         validateProductExistence(tenantName, itemsRequestDTO);
         BasketModel basketModel = getBasketToModifyOrException(basketId, tenantName);
-        basketModel.addOrUpdate(basketItemMapper.toModelList(itemsRequestDTO));
+        basketModel.addOrUpdate(
+                basketItemMapper.toModelList(itemsRequestDTO),
+                productService.getProducts(tenantName)
+        );
         return basketMapper.toResponseDTO(basketRepository.save(basketModel));
     }
 
@@ -179,22 +183,13 @@ public class BasketService {
         TenantModel tenant = getTenantOrException(tenantName);
         validateProductExistence(tenantName, itemsRequestDTO);
 
-        Map<String, ProductBase> productMap = productService.getProducts(tenantName).stream().collect(toMap(
-                ProductBase::getId,
-                product -> product
-        ));
-
         List<BasketItemModel> basketItems = basketItemMapper.toModelList(groupingProducts(itemsRequestDTO));
-
-        basketItems = basketItems.stream().peek(item -> item.setProductName(
-                productMap.get(item.getProductId()
-        ).getName())).toList();
 
         BasketModel newBasketModel = new BasketModel();
 
         newBasketModel.setTenant(tenant);
         newBasketModel.setStatus(BasketStatusEnum.ACTIVE);
-        newBasketModel.addOrUpdate(basketItems);
+        newBasketModel.addOrUpdate(basketItems, productService.getProducts(tenantName));
         return basketMapper.toResponseDTO(basketRepository.save(newBasketModel));
     }
 
@@ -218,6 +213,7 @@ public class BasketService {
         basketRepository.save(basketModel);
     }
 
+    @Transactional
     public void deleteBasket(Long basketId, String tenantName) {
         BasketModel basketModel = basketRepository.findById(basketId).orElseThrow(BasketNotFoundException::new);
         basketRepository.delete(basketModel);
