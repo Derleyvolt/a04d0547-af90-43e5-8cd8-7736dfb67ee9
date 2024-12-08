@@ -1,4 +1,4 @@
-package com.challenge.checkout.gateway.defaultMapping;
+package com.challenge.checkout.gateway.coreMapping;
 
 public enum PromotionEnum {
     BUY_X_GET_Y_FREE,

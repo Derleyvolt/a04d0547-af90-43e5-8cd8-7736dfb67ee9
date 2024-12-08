@@ -1,10 +1,10 @@
-package com.challenge.checkout.gateway.defaultMapping;
+package com.challenge.checkout.gateway.coreMapping;
 
 import com.challenge.checkout.entity.product.ProductBase;
 import com.challenge.checkout.entity.product.ProductWithPromotions;
 import com.challenge.checkout.gateway.MappingFormatEnum;
 import com.challenge.checkout.gateway.WiremockGateway;
-import com.challenge.checkout.gateway.defaultMapping.productMapper.ProductMapper;
+import com.challenge.checkout.gateway.coreMapping.productMapper.ProductMapper;
 import com.challenge.checkout.gateway.MarketGateway;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

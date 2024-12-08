@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Service
@@ -161,13 +162,41 @@ public class BasketService {
         return basketMapper.toResponseDTO(basketRepository.save(basketModel));
     }
 
+    @Transactional
     public BasketResponseDTO addOrUpdateBasketItems(Long basketId, String tenantName, List<BasketItemRequestDTO> itemsRequestDTO) {
         validateProductExistence(tenantName, itemsRequestDTO);
         BasketModel basketModel = getBasketToModifyOrException(basketId, tenantName);
-        basketModel.addOrUpdate(
-                basketItemMapper.toModelList(itemsRequestDTO),
-                productService.getProducts(tenantName)
+        List<ProductBase> products = productService.getProducts(tenantName);
+
+        Set<String> storedBasketItems = basketModel.getItems().stream()
+                .map(BasketItemModel::getProductId)
+                .collect(Collectors.toSet());
+
+        // Get list of items to be updated (existing in basket and in request)
+        List<BasketItemRequestDTO> itemsToUpdateDTO = itemsRequestDTO
+                .stream()
+                .filter(
+                        itemDTO -> storedBasketItems.contains(itemDTO.getProductId())
+                )
+                .toList();
+
+        // Grouping new items, case where can appear same item
+        // several times.
+        List<BasketItemRequestDTO> newItemsDTO = groupingProducts(
+                itemsRequestDTO.stream().filter(
+                    basketItem -> !storedBasketItems.contains(basketItem.getProductId())
+                ).toList()
         );
+
+        basketModel.addOrUpdate(basketItemMapper.toModelList(
+                    Stream.concat(
+                            newItemsDTO.stream(),
+                            itemsToUpdateDTO.stream()
+                    ).toList()
+                ),
+                products
+        );
+
         return basketMapper.toResponseDTO(basketRepository.save(basketModel));
     }
 

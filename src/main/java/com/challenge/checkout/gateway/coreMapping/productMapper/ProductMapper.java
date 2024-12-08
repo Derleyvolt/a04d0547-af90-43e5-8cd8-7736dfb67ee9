@@ -1,4 +1,4 @@
-package com.challenge.checkout.gateway.defaultMapping.productMapper;
+package com.challenge.checkout.gateway.coreMapping.productMapper;
 
 import com.challenge.checkout.exception.BadRequestException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -7,7 +7,7 @@ import com.challenge.checkout.entity.product.ProductWithPromotions;
 import com.challenge.checkout.entity.product.ProductBase;
 import com.challenge.checkout.gateway.ProductGatewayMapper;
 import com.challenge.checkout.gateway.PromotionGatewayMapper;
-import com.challenge.checkout.gateway.defaultMapping.PromotionFactoryRegistry;
+import com.challenge.checkout.gateway.coreMapping.PromotionFactoryRegistry;
 
 import java.math.BigInteger;
 import java.util.List;

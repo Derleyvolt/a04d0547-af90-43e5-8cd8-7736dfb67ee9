@@ -1,4 +1,4 @@
-package com.challenge.checkout.gateway.defaultMapping.promotionFactoryMapper;
+package com.challenge.checkout.gateway.coreMapping.promotionFactoryMapper;
 
 import com.challenge.checkout.entity.promotion.FlatPercentPromotion;
 import com.challenge.checkout.entity.promotion.Promotion;

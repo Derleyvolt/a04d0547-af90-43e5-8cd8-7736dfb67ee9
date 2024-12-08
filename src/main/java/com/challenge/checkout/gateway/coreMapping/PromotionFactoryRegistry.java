@@ -1,9 +1,9 @@
-package com.challenge.checkout.gateway.defaultMapping;
+package com.challenge.checkout.gateway.coreMapping;
 
 import com.challenge.checkout.gateway.PromotionGatewayMapper;
-import com.challenge.checkout.gateway.defaultMapping.promotionFactoryMapper.BuyXGetYFreeFactoryMapper;
-import com.challenge.checkout.gateway.defaultMapping.promotionFactoryMapper.FlatPercentFactoryMapper;
-import com.challenge.checkout.gateway.defaultMapping.promotionFactoryMapper.QtyBasedPriceOverrideFactoryMapper;
+import com.challenge.checkout.gateway.coreMapping.promotionFactoryMapper.BuyXGetYFreeFactoryMapper;
+import com.challenge.checkout.gateway.coreMapping.promotionFactoryMapper.FlatPercentFactoryMapper;
+import com.challenge.checkout.gateway.coreMapping.promotionFactoryMapper.QtyBasedPriceOverrideFactoryMapper;
 
 import java.util.HashMap;
 import java.util.Map;
