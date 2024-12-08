@@ -21,13 +21,13 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping(value = "/{tenantName}/products")
-    public ResponseEntity<List<ProductBase>> getAllBaskets(@PathVariable String tenantName) {
+    public ResponseEntity<List<ProductBase>> getProducts(@PathVariable String tenantName) {
         List<ProductBase> products = productService.getProducts(tenantName);
         return ResponseEntity.ok(products);
     }
 
     @GetMapping(value = "/{tenantName}/products/{productId}")
-    public ResponseEntity<ProductWithPromotions> getAllBaskets(
+    public ResponseEntity<ProductWithPromotions> getProductWithPromotion(
             @PathVariable String tenantName,
             @PathVariable String productId
     ) {

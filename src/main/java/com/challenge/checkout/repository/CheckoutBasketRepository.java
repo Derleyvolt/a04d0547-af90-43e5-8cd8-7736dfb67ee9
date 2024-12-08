@@ -10,5 +10,4 @@ import java.util.Optional;
 
 @Repository
 public interface CheckoutBasketRepository extends JpaRepository<CheckoutBasketModel, Long> {
-    Optional<CheckoutBasketModel> findByBasket(BasketModel basketModel);
 }

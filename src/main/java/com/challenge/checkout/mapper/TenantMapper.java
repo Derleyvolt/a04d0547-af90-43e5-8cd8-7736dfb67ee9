@@ -4,12 +4,14 @@ import com.challenge.checkout.dto.request.TenantRequestDTO;
 import com.challenge.checkout.dto.response.TenantResponseDTO;
 import com.challenge.checkout.model.TenantModel;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses={MappingFormatMapper.class})
 public interface TenantMapper {
-    TenantModel toModel(TenantResponseDTO dto);
     TenantResponseDTO toResponseDTO(TenantModel model);
 
+    @Mapping(target="mappingFormat", ignore=true)
     TenantModel toModel(TenantRequestDTO dto);
+
     TenantRequestDTO toRequestDTO(TenantModel model);
 }

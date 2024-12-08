@@ -19,9 +19,9 @@ public class TenantController {
     @Autowired
     private TenantService tenantService;
 
-    @GetMapping(value = "/")
-    public ResponseEntity<List<TenantResponseDTO>> getTenants() {
-        List<TenantResponseDTO> tenants = tenantService.getTenants();
+    @GetMapping
+    public ResponseEntity<List<TenantResponseDTO>> getAllTenants() {
+        List<TenantResponseDTO> tenants = tenantService.getAllTenants();
         return ResponseEntity.ok(tenants);
     }
 

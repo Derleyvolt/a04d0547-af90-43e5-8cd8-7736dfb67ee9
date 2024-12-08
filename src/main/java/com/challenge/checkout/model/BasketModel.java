@@ -25,10 +25,25 @@ public class BasketModel {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "tenantId", referencedColumnName = "id", nullable = false)
+    @JoinColumn(
+            name = "tenantId",
+            referencedColumnName = "id",
+            nullable = false
+    )
     private TenantModel tenant;
 
-    @OneToMany(mappedBy = "basket", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @JoinColumn(name = "checkoutBasketId")
+    private CheckoutBasketModel checkoutBasket;
+
+    @OneToMany(
+            mappedBy = "basket",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<BasketItemModel> items = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)

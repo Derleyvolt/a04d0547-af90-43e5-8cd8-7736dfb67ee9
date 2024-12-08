@@ -1,25 +1,25 @@
-package com.challenge.checkout.gateway.marketB.productMapper;
+package com.challenge.checkout.gateway.defaultMapping.productMapper;
 
-import com.challenge.checkout.entity.product.ProductBase;
-import com.challenge.checkout.entity.product.ProductWithPromotions;
 import com.challenge.checkout.exception.BadRequestException;
-import com.challenge.checkout.gateway.ProductGatewayMapper;
-import com.challenge.checkout.gateway.PromotionGatewayMapper;
-import com.challenge.checkout.gateway.marketB.PromotionFactoryRegistryMarketB;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.challenge.checkout.entity.product.ProductWithPromotions;
+import com.challenge.checkout.entity.product.ProductBase;
+import com.challenge.checkout.gateway.ProductGatewayMapper;
+import com.challenge.checkout.gateway.PromotionGatewayMapper;
+import com.challenge.checkout.gateway.defaultMapping.PromotionFactoryRegistry;
 
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
-public class ProductMapperMarketB implements ProductGatewayMapper {
+public class ProductMapper implements ProductGatewayMapper {
     public ProductBase mapProductBase(Map<String, Object> json) {
         try {
             return new ProductBase(
                     json.get("id").toString(),
                     json.get("name").toString(),
-                    new BigInteger(json.get("unit_price").toString())
+                    new BigInteger(json.get("price").toString())
             );
         } catch (Exception e) {
             throw new BadRequestException("Error parsing product base from JSON");
@@ -38,14 +38,14 @@ public class ProductMapperMarketB implements ProductGatewayMapper {
 
             product.setId(json.get("id").toString());
             product.setName(json.get("name").toString());
-            product.setPrice(new BigInteger(json.get("unit_price").toString()));
+            product.setPrice(new BigInteger(json.get("price").toString()));
 
             product.setPromotions(
                     jsonPromotions.stream().map(
                             jsonPromotion -> {
                                 String promotionType = jsonPromotion.get("type").toString();
                                 PromotionGatewayMapper promotionMapper =
-                                        PromotionFactoryRegistryMarketB.getPromotionGatewayMapper(promotionType);
+                                        PromotionFactoryRegistry.getPromotionGatewayMapper(promotionType);
                                 return promotionMapper.map(jsonPromotion);
                             }
                     ).toList()

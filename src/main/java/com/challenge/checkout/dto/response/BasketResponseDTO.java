@@ -16,7 +16,9 @@ import java.util.List;
 public class BasketResponseDTO {
     @NotNull
     private Long id;
+
     @NotNull
     private BasketStatusEnum status;
+
     private List<BasketItemResponseDTO> items;
 }

@@ -136,9 +136,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ProblemDetail handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
         ProblemDetail problemDetails = ProblemDetail
-                .forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+                .forStatusAndDetail(
+                        HttpStatus.BAD_REQUEST,
+                        "The provided data violates a database constraint, such as a duplicate value or invalid reference.");
 
-        problemDetails.setTitle("Invalid URL");
+        problemDetails.setTitle("Data Integrity Violation");
         problemDetails.setProperty("timestamp", Instant.now());
 
         return problemDetails;

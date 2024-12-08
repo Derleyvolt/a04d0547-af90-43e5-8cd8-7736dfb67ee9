@@ -21,25 +21,12 @@ public class CheckoutBasketItemModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     private String productId;
-
-    @NotBlank
     private String productName;
-
-    @Positive
     private int quantity;
-
-    @Min(0)
     private int total;
-
-    @Min(0)
     private BigDecimal totalDiscounts;
-
-    @Min(0)
     private BigDecimal totalPayable;
-
-    @Min(0)
     private BigInteger unitPrice;
 
     @ManyToOne

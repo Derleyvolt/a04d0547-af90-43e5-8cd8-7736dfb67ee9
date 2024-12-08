@@ -1,5 +1,6 @@
 package com.challenge.checkout.entity.promotion;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,8 @@ import java.math.BigInteger;
 public abstract class Promotion implements Comparable<Promotion> {
     protected String id;
     protected String type;
+
+    @JsonIgnore
     protected int priority;
 
     public abstract PromotionResult calculateDiscount(BigDecimal total, BigInteger unitPrice, int quantity);

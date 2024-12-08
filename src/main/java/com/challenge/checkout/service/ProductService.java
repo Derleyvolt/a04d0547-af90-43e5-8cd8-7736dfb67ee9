@@ -25,7 +25,8 @@ public class ProductService {
                 () -> new BadRequestException(String.format("Tenant %s not found.", tenantName))
         );
 
-        WiremockGateway wiremockGateway = gatewayMarketStrategy.getMarketGateway(tenantModel.getName());
+        WiremockGateway wiremockGateway =
+                gatewayMarketStrategy.getMarketGateway(tenantModel.getMappingFormat());
         return wiremockGateway.getProductWithPromotions(tenantModel.getBaseURL(), productId);
     }
 
@@ -34,7 +35,8 @@ public class ProductService {
                 () -> new BadRequestException(String.format("Tenant %s not found.", tenantName))
         );
 
-        WiremockGateway wiremockGateway = gatewayMarketStrategy.getMarketGateway(tenantModel.getName());
+        WiremockGateway wiremockGateway =
+                gatewayMarketStrategy.getMarketGateway(tenantModel.getMappingFormat());
         return wiremockGateway.getProducts(tenantModel.getBaseURL());
     }
 }

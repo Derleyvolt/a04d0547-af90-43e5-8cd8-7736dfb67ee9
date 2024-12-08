@@ -19,19 +19,14 @@ public class CheckoutBasketModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "basketId", nullable = false)
-    private BasketModel basket;
-
-    @OneToMany(mappedBy = "checkoutBasket", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(
+            mappedBy = "checkoutBasket",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<CheckoutBasketItemModel> items = new ArrayList<>();
 
-    @Min(0)
     private int total;
-
-    @Min(0)
     private BigDecimal totalDiscounts = BigDecimal.valueOf(0);
-
-    @Min(0)
-    private BigDecimal totalPayable = BigDecimal.valueOf(0);
+    private BigDecimal totalPayable   = BigDecimal.valueOf(0);
 }

@@ -8,5 +8,5 @@ import java.util.List;
 public interface WiremockGateway {
     public List<ProductBase> getProducts(String baseURL);
     public ProductWithPromotions getProductWithPromotions(String baseURL, String productId);
-    public String getTenantName();
+    public MappingFormatEnum getMappingFormat();
 }

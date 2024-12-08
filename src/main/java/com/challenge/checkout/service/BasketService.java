@@ -18,7 +18,6 @@ import com.challenge.checkout.mapper.BasketMapper;
 import com.challenge.checkout.mapper.CheckoutBasketModelMapper;
 import com.challenge.checkout.model.*;
 import com.challenge.checkout.repository.BasketRepository;
-import com.challenge.checkout.repository.CheckoutBasketRepository;
 import com.challenge.checkout.repository.TenantRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -36,7 +35,6 @@ public class BasketService {
     private final ProductService productService;
     private final BasketMapper basketMapper;
     private final BasketItemMapper basketItemMapper;
-    private final CheckoutBasketRepository checkoutBasketRepository;
     private final CheckoutBasketModelMapper checkoutBasketModelMapper;
     private final TenantRepository tenantRepository;
 
@@ -45,7 +43,6 @@ public class BasketService {
         ProductService productService,
         BasketMapper basketMapper,
         BasketItemMapper basketItemMapper,
-        CheckoutBasketRepository checkoutBasketRepository,
         CheckoutBasketModelMapper checkoutBasketModelMapper,
         TenantRepository tenantRepository
     ) {
@@ -53,7 +50,6 @@ public class BasketService {
         this.productService = productService;
         this.basketMapper = basketMapper;
         this.basketItemMapper = basketItemMapper;
-        this.checkoutBasketRepository = checkoutBasketRepository;
         this.checkoutBasketModelMapper = checkoutBasketModelMapper;
         this.tenantRepository = tenantRepository;
     }
@@ -203,24 +199,23 @@ public class BasketService {
             throw new BasketAlreadyOpenException();
         }
 
-        // Delete Checkout Model to allow to do new checkout
-        CheckoutBasketModel checkoutModel = checkoutBasketRepository
-                .findByBasket(basketModel)
-                .orElseThrow(() -> new BadRequestException("Checkout model not found"));
 
-        checkoutBasketRepository.delete(checkoutModel);
+        basketModel.setCheckoutBasket(null);
+
         basketModel.setStatus(BasketStatusEnum.ACTIVE);
         basketRepository.save(basketModel);
     }
 
     @Transactional
     public void deleteBasket(Long basketId, String tenantName) {
-        BasketModel basketModel = basketRepository.findById(basketId).orElseThrow(BasketNotFoundException::new);
+        TenantModel tenant = getTenantOrException(tenantName);
+        BasketModel basketModel = basketRepository.findByIdAndTenant(basketId, tenant).orElseThrow(BasketNotFoundException::new);
         basketRepository.delete(basketModel);
     }
 
     public BasketResponseDTO detailBasket(Long basketId, String tenantName) {
-        BasketModel basketModel = basketRepository.findById(basketId).orElseThrow(BasketNotFoundException::new);
+        TenantModel tenant = getTenantOrException(tenantName);
+        BasketModel basketModel = basketRepository.findByIdAndTenant(basketId, tenant).orElseThrow(BasketNotFoundException::new);
         return basketMapper.toResponseDTO(basketModel);
     }
 
@@ -295,8 +290,6 @@ public class BasketService {
             );
         }
 
-        checkoutModel.setBasket(basketModel);
-
         checkoutItems.forEach(checkoutItem -> {
             checkoutModel.setTotal(checkoutModel.getTotal() + checkoutItem.getTotal());
             checkoutModel.setTotalPayable(checkoutModel.getTotalPayable().add(checkoutItem.getTotalPayable()));
@@ -304,9 +297,10 @@ public class BasketService {
         });
 
         checkoutModel.setItems(checkoutItems);
+        basketModel.setCheckoutBasket(checkoutModel);
+        basketRepository.save(basketModel);
 
-        basketRepository.save(basketModel); // save checkout status
-        return checkoutBasketModelMapper.toResponseDTO(checkoutBasketRepository.save(checkoutModel));
+        return checkoutBasketModelMapper.toResponseDTO(checkoutModel);
     }
 
     // Show stored checkout
@@ -317,10 +311,6 @@ public class BasketService {
             throw new BadRequestException("Basket is not in checkout status");
         }
 
-        return checkoutBasketModelMapper
-                .toResponseDTO(checkoutBasketRepository.findByBasket(basketModel)
-                .orElseThrow(
-                        () -> new BadRequestException("Checkout model not found"))
-                );
+        return checkoutBasketModelMapper.toResponseDTO(basketModel.getCheckoutBasket());
     }
 }

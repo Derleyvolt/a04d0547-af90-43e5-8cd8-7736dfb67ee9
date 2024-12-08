@@ -307,20 +307,13 @@ public class BasketServiceTest {
 
     @Test
     void testReopenBasket() {
-        // Only basketModel quantity matter, not output
-        Mockito.when(checkoutBasketRepository.findByBasket(Mockito.any())).thenReturn(Optional.of(new CheckoutBasketModel()));
-
         basket.setStatus(BasketStatusEnum.CHECKOUT);
-
         basketService.reopenBasket(1L, "some_tenant");
-
         assertEquals(BasketStatusEnum.ACTIVE, basket.getStatus());
     }
 
     @Test
     void testReopenBasketWhenBasketAlreadyIsActive() {
-        Mockito.when(checkoutBasketRepository.findByBasket(Mockito.any())).thenReturn(Optional.of(new CheckoutBasketModel()));
-
         basket.setStatus(BasketStatusEnum.ACTIVE);
 
         assertThrows(

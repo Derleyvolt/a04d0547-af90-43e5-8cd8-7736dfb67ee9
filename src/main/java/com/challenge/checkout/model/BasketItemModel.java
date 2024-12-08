@@ -21,13 +21,10 @@ public class BasketItemModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     private String productId;
 
-    @NotBlank
     private String productName;
 
-    @Positive
     private int quantity;
 
     @ManyToOne

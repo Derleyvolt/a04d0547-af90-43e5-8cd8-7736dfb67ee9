@@ -1,6 +1,9 @@
 package com.challenge.checkout.dto.request;
 
+import com.challenge.checkout.gateway.MappingFormatEnum;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,4 +22,7 @@ public class TenantRequestDTO {
     @NotBlank
     @Size(min=5, max=55)
     private String baseURL;
+
+    @NotBlank
+    private String mappingFormat;
 }

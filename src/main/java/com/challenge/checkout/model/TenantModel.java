@@ -1,9 +1,8 @@
 package com.challenge.checkout.model;
 
+import com.challenge.checkout.gateway.MappingFormatEnum;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,12 +22,18 @@ public class TenantModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     private String name;
 
-    @Size(min=5, max=55)
     private String baseURL;
 
-    @OneToMany(mappedBy = "tenant", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(
+            mappedBy = "tenant",
+            cascade  = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<BasketModel> baskets = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private MappingFormatModel mappingFormat;
 }
