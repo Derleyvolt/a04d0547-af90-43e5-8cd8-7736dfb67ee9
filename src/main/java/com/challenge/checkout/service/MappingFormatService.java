@@ -32,7 +32,7 @@ public class MappingFormatService {
     public MappingFormatResponseDTO createMappingFormat(MappingFormatRequestDTO dto) {
         // Check if the mapping format exists
         if (mappingFormatRepository.existsByName(dto.getName())) {
-            throw new BadRequestException("Mapping Format not found");
+            throw new BadRequestException("Mapping Format already exists");
         }
 
         MappingFormatModel mappingFormatModel = mappingFormatMapper.toModel(dto);
