@@ -27,7 +27,6 @@ import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toMap;
 
 @Service
 public class BasketService {
@@ -84,7 +83,7 @@ public class BasketService {
         }
 
         return basketModel;
-    };
+    }
 
     public BasketModel getBasketOrException(Long basketId, String tenantName) {
         TenantModel tenant = getTenantOrException(tenantName);
@@ -93,7 +92,6 @@ public class BasketService {
     }
 
     private void validateProductExistence(String tenantName, List<BasketItemRequestDTO> itemsRequestDTO) {
-        TenantModel tenant = getTenantOrException(tenantName);
         List<ProductBase> products = productService.getProducts(tenantName);
 
         Set<String> productsId = products.stream()
@@ -110,9 +108,7 @@ public class BasketService {
         if (!productsNotFound.isEmpty()) {
             List<String> errors = new ArrayList<>();
 
-            productsNotFound.forEach(productId -> {
-                errors.add("The product with ID " + productId + " does not exist.");
-            });
+            productsNotFound.forEach(productId -> errors.add("The product with ID " + productId + " does not exist."));
 
             throw new ProductBadRequestException(errors);
         }

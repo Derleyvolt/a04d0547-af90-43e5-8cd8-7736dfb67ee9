@@ -13,10 +13,8 @@ import com.challenge.checkout.mapper.BasketItemMapper;
 import com.challenge.checkout.mapper.BasketMapper;
 import com.challenge.checkout.model.BasketItemModel;
 import com.challenge.checkout.model.BasketModel;
-import com.challenge.checkout.model.CheckoutBasketModel;
 import com.challenge.checkout.model.TenantModel;
 import com.challenge.checkout.repository.BasketRepository;
-import com.challenge.checkout.repository.CheckoutBasketRepository;
 import com.challenge.checkout.repository.TenantRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,9 +53,6 @@ public class BasketServiceTest {
     @Mock
     private BasketItemMapper basketItemMapper;
 
-    @Mock
-    private CheckoutBasketRepository checkoutBasketRepository;
-
     @Autowired
     @InjectMocks
     private BasketService basketService;
@@ -82,13 +77,6 @@ public class BasketServiceTest {
         Mockito.when(basketRepository.save(basket)).thenReturn(basket);
         Mockito.when(basketRepository.findByIdAndTenant(1L, tenant)).thenReturn(Optional.of(basket));
         Mockito.when(productService.getProducts(tenant.getName())).thenReturn(productBaseList);
-    }
-
-    private List<BasketItemRequestDTO> getMockItemsRequestDTO() {
-        return List.of(
-                new BasketItemRequestDTO("JKDkdja415", 2),
-                new BasketItemRequestDTO("Dkfhajdg2b", 1)
-        );
     }
 
     private List<BasketItemModel> getMockBasketItemsModel() {
