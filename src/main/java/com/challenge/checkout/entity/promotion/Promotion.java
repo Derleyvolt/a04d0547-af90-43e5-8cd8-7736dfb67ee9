@@ -21,7 +21,6 @@ public abstract class Promotion implements Comparable<Promotion> {
     protected int priority;
 
     public abstract PromotionResult calculateDiscount(BigDecimal total, BigInteger unitPrice, int quantity);
-    public abstract int getPriority();
 
     @Override public int compareTo(Promotion other) {
         return Integer.compare(this.priority, other.priority);

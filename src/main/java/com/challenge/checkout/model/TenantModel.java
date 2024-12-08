@@ -1,8 +1,6 @@
 package com.challenge.checkout.model;
 
-import com.challenge.checkout.gateway.MappingFormatEnum;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

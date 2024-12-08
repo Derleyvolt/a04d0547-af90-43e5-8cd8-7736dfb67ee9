@@ -13,9 +13,7 @@ public class GatewayMarketStrategy {
     private final Map<String, WiremockGateway> gateways = new HashMap<>();
 
     public GatewayMarketStrategy(List<WiremockGateway> gatewayList) {
-        gatewayList.forEach(gateway -> {
-            this.gateways.put(gateway.getMappingFormat().name(), gateway);
-        });
+        gatewayList.forEach(gateway -> this.gateways.put(gateway.getMappingFormat().name(), gateway));
     }
 
     public WiremockGateway getMarketGateway(MappingFormatModel marketMappingFormat) {

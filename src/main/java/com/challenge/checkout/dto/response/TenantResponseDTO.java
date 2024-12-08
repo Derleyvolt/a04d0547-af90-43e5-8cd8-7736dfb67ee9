@@ -1,6 +1,5 @@
 package com.challenge.checkout.dto.response;
 
-import com.challenge.checkout.gateway.MappingFormatEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

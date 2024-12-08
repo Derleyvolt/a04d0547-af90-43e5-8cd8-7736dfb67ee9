@@ -12,6 +12,4 @@ public interface TenantMapper {
 
     @Mapping(target="mappingFormat", ignore=true)
     TenantModel toModel(TenantRequestDTO dto);
-
-    TenantRequestDTO toRequestDTO(TenantModel model);
 }

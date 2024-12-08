@@ -39,9 +39,4 @@ public class QtyBasedPriceOverridePromotion extends Promotion {
         }
         return new PromotionResult(total, unitPrice, quantity, BigDecimal.valueOf(0));
     }
-
-    @Override
-    public int getPriority() {
-        return priority;
-    }
 }

@@ -35,9 +35,4 @@ public class FlatPercentPromotion extends Promotion {
                 .discount(discount)
                 .build();
     }
-
-    @Override
-    public int getPriority() {
-        return priority;
-    }
 }
